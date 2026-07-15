@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -10,14 +11,14 @@ st.set_page_config(page_title="Roblox EDA Dashboard", layout="wide")
 @st.cache_data
 def load_and_clean_data():
     """Load the cleaned Roblox dataset and prepare it for analysis."""
-    for path in ["Cleaned_data.csv", "roblox_games_data.csv"]:
-        try:
-            df = pd.read_csv(path)
-            break
-        except FileNotFoundError:
-            df = None
+    preferred_path = "Cleaned_data.csv"
+    fallback_path = "roblox_games_data.csv"
 
-    if df is None:
+    if os.path.exists(preferred_path):
+        df = pd.read_csv(preferred_path)
+    elif os.path.exists(fallback_path):
+        df = pd.read_csv(fallback_path)
+    else:
         raise FileNotFoundError("No Roblox dataset file was found in the workspace.")
 
     if "Genre" in df.columns:
